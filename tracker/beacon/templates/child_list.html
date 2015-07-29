@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+    {% for child in object_list %}
+        {{ child }}
+    {% endfor%}
+
+{#    {% for child in request.user.parent.child_set %}#}
+
+{% endblock %}

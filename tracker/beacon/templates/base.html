@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Tracker</title>
+</head>
+<body>
+
+<h1>TenPm</h1>
+
+<h2>User: {{ user.username }}</h2>
+<a href="/">Home</a>
+
+{% if user.id %}
+<a href="{% url 'logout' %}">Logout</a>
+<a href="{% url 'child_create' %}">Create Child</a>
+<a href="{% url 'inquiry_create' %}">Find Your Child</a>
+<a href="{% url 'child_list' %}">Child List</a>
+{% else %}
+<a href="{% url 'login' %}">Login</a>
+<a href="{% url 'registration' %}">Sign up</a>
+{%  endif %}
+
+
+{% block body %}
+{% endblock %}
+
+</body>
+</html>
