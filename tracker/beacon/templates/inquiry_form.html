@@ -7,7 +7,7 @@
         <input type="submit" value="Create" />
     </form>
 
-    {% for inquiry in request.user.parent.inquiry_set.all %}
-        {{ inquiry }}
+    {% for inquiry in request.user.parent.inquiry_set.all|dictsortreversed:'id'|slice:":10" %}
+        <p><a href="{% url 'inquiry_detail' pk=inquiry.id %}">{{ inquiry }}</a></p>
     {% endfor %}
 {% endblock %}

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <style>
+#map {width:100%;height:100%;}
+</style>
+{% comment %}
+<form action="someurl" method="post">
+<input name="Send" type="text">
+<input type="submit" value="Send">
+</form>
+{% endcomment %}
+<script>
+
+    function initGeolocation() {
+ if (navigator && navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+        } else {
+            console.log('Geolocation is not supported');
+        }
+}
+
+function errorCallback() {}
+
+function successCallback(position) {
+      var mapUrl = "http://maps.google.com/maps/api/staticmap?center=";
+      mapUrl = mapUrl + position.coords.latitude + ',' + position.coords.longitude;
+      mapUrl = mapUrl + '&zoom=15&size=512x512&maptype=roadmap&sensor=false';
+      var imgElement = document.getElementById("static-map");
+      imgElement.src = mapUrl;
+    var lat = position.coords.latitude.toString();
+    var long = position.coords.longitude.toString();
+    var coordinates = lat + ',' + long;
+    console.log(coordinates);
+    var location = {
+        position: coordinates
+    };
+    console.log("hey", location);
+    $(function (){
+        $.ajax({
+            type: 'PATCH',
+            url: "/api/inquiry/"+ {{ inquiry.id }},
+            datatype:'text',
+            data: location
+        });
+        $.ajax({
+            type:'POST',
+            url: "/api/status/"+ {{ inquiry.id }},
+        })
+    })
+}
+</script>
+
+<script>
+    $(function() {
+        $.ajax({
+            type:'GET',
+            url: "/api/inquiry/"+ {{ inquiry.id }},
+        })
+    })
+</script>
+<body onload="javascript:initGeolocation()">
+<div id="map">
+  <img id="static-map" src="placeholder.png" />
+</div>
+</body>
+
+{% endblock %}

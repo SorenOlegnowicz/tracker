@@ -1,5 +1,5 @@
 from django import forms
-from .models import Inquiry
+from .models import Inquiry, Parent, Child
 
 
 class InquiryForm(forms.Form):
@@ -9,3 +9,7 @@ class InquiryForm(forms.Form):
     class Meta:
         model = Inquiry
         fields = ['description']
+
+
+class ReplyForm(forms.Form):
+    pass

@@ -16,17 +16,21 @@ Including another URLconf
 
 from django.conf.urls import include, url
 from django.contrib import admin
-from beacon import views
 from django.contrib.auth.views import login, logout
+
+from beacon import views
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.home, name='home'),
+    url(r'^api/', include('api.urls')),
     url(r'^registration/$', views.Registration.as_view(), name="registration"),
     url(r'^registration/parent_create/', views.ParentCreateView.as_view(), name="parent_create"),
     url(r'^accounts/login/', login, name="login"),
     url(r'^logout/', logout, {'next_page': '/'}, name="logout"),
     url(r'^child_create/$', views.ChildCreateView.as_view(), name='child_create'),
     url(r'^child_list/$', views.ChildListView.as_view(), name='child_list'),
-    url(r'^inquiry/', views.InquiryCreateView.as_view(), name='inquiry_create'),
+    url(r'^inquiry/$', views.InquiryCreateView.as_view(), name='inquiry_create'),
+    url(r'^inquiry/(?P<pk>\d+)/', views.InquiryDetailView.as_view(), name='inquiry_detail'),
+    url(r'^test/(?P<pk>\d+)/', views.test, name='test')
 ]

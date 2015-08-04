@@ -1,0 +1,44 @@
+
+{% block content %}
+<style>
+#map {width:100%;height:100%;}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+
+    function initGeolocation() {
+ if (navigator && navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+        } else {
+            console.log('Geolocation is not supported');
+        }
+}
+
+function errorCallback() {}
+
+function successCallback(position) {
+    console.log(position.coords.latitude);
+    console.log(position.coords.longitude);
+
+    /*
+    var location = {
+        position: position.coords
+    };
+
+    $.ajax({
+        type: 'POST',
+        url: '/api/inquiry/2/',
+        data: location
+    });
+    */
+}
+
+
+</script>
+<body onload="javascript:initGeolocation()">
+
+<div id="map">
+    <img id="static-map" src="placeholder.png" />
+</div>
+
+{% endblock %}

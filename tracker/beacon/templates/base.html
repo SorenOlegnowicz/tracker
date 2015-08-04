@@ -13,9 +13,9 @@
 
 {% if user.id %}
 <a href="{% url 'logout' %}">Logout</a>
-<a href="{% url 'child_create' %}">Create Child</a>
-<a href="{% url 'inquiry_create' %}">Find Your Child</a>
-<a href="{% url 'child_list' %}">Child List</a>
+<a href="{% url 'child_create' %}">Procreate</a>
+<a href="{% url 'child_list' %}">Progeny</a>
+<a href="{% url 'inquiry_create' %}">Inquire</a>
 {% else %}
 <a href="{% url 'login' %}">Login</a>
 <a href="{% url 'registration' %}">Sign up</a>

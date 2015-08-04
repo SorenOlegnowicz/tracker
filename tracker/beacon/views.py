@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login
 from django.shortcuts import render
 from django.views import generic
-from .models import Parent, Child, Inquiry, Reply
+from .models import Parent, Child, Inquiry
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
@@ -13,8 +13,14 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 
 
+def test(request, pk):
+    var = Inquiry.objects.get(pk=pk)
+    context = {'inquiry': var}
+    return render_to_response("reply.html", context)
+
+
 def home(request):
-    context ={}
+    context = {}
     return render_to_response("base.html", context, context_instance=RequestContext(request))
 
 
@@ -40,13 +46,13 @@ class ParentCreateView(generic.CreateView):
     success_url = '/'
 
     def form_valid(self, form):
-        print('hello')
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+
 class ChildCreateView(generic.CreateView):
     model = Child
-    fields = ['name', 'code']
+    fields = ['name', 'code', 'telephone']
     template_name = 'child_form.html'
     success_url = '/child_list'
 
@@ -73,7 +79,7 @@ class InquiryCreateView(generic.CreateView):
     model = Inquiry
     fields = ['child', 'description']
     template_name = 'inquiry_form.html'
-    success_url = 'inquiry_form.html'
+    success_url = '/inquiry'
 
     # Filters the 'child' field
     def get_form(self, form_class=None):
@@ -88,3 +94,8 @@ class InquiryCreateView(generic.CreateView):
 class InquiryListView(generic.ListView):
     model = Inquiry
     template_name = 'inquiry_form.html'
+
+
+class InquiryDetailView(generic.DetailView):
+    model = Inquiry
+    template_name = 'inquiry_detail2.html'
