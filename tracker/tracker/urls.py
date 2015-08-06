@@ -30,7 +30,8 @@ urlpatterns = [
     url(r'^logout/', logout, {'next_page': '/'}, name="logout"),
     url(r'^child_create/$', views.ChildCreateView.as_view(), name='child_create'),
     url(r'^child_list/$', views.ChildListView.as_view(), name='child_list'),
+    url(r'^child/(?P<pk>\d+)/', views.child_detail, name="child_detail"),
     url(r'^inquiry/$', views.InquiryCreateView.as_view(), name='inquiry_create'),
-    url(r'^inquiry/(?P<pk>\d+)/', views.InquiryDetailView.as_view(), name='inquiry_detail'),
-    url(r'^test/(?P<pk>\d+)/', views.test, name='test')
+    url(r'^inquiry/(?P<pk>\d+)/', views.inquiry_detail, name='inquiry_detail'),
+    url(r'^test/(?P<pk>\d+)/', views.reply, name='reply')
 ]

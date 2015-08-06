@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+    <p>Pin Number: {{ obj.pin }}</p>
+    <p>Phone Number: {{ obj.telephone }}</p>
+    <p>Most recent Inquiry: <a href="{% url 'inquiry_detail' latest.id %}">{{ latest }}</a></p>
+    <p>Total Replies: {{ replies }}</p>
+    <p>Replies per Inquiry: ? / {{ inquiries }}</p>
+    <p>Average time to reply: {{ hours }} hours, {{ minutes }} minutes, {{ seconds }} seconds</p>
+
+
+{% endblock %}

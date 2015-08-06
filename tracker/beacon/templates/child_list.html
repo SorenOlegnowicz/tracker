@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
 {% block body %}
-
+    <h3>Your Children:</h3>
     {% for child in object_list %}
-        {{ child }}
+        <p><a href="{% url 'child_detail' child.pk %}">{{ child }}</a></p>
     {% endfor%}
 
 {#    {% for child in request.user.parent.child_set %}#}

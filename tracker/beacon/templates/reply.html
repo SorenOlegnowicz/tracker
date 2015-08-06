@@ -12,9 +12,8 @@
 </form>
 {% endcomment %}
 <script>
-
-    function initGeolocation() {
- if (navigator && navigator.geolocation) {
+function initGeolocation() {
+    if (navigator && navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
         } else {
             console.log('Geolocation is not supported');
@@ -33,6 +32,9 @@ function successCallback(position) {
     var long = position.coords.longitude.toString();
     var coordinates = lat + ',' + long;
     console.log(coordinates);
+    var coords = document.getElementById('coordinates');
+    coords.value = coordinates;
+    /*
     var location = {
         position: coordinates
     };
@@ -49,21 +51,23 @@ function successCallback(position) {
             url: "/api/status/"+ {{ inquiry.id }},
         })
     })
+    */
 }
-</script>
 
-<script>
-    $(function() {
-        $.ajax({
-            type:'GET',
-            url: "/api/inquiry/"+ {{ inquiry.id }},
-        })
-    })
 </script>
 <body onload="javascript:initGeolocation()">
 <div id="map">
   <img id="static-map" src="placeholder.png" />
 </div>
+<form action="" method="POST">
+       {% csrf_token %}
+        <label>
+            <input name="pin" type="text">
+            <input name="description" type="text">
+            <input name="position" type="hidden" id="coordinates">
+        </label>
+        <input type="submit" value="Send">
+    </form>
 </body>
 
 {% endblock %}

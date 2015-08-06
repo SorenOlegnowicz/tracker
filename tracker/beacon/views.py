@@ -1,8 +1,10 @@
+from datetime import timedelta
 from django.contrib.auth import authenticate
 from django.contrib.auth import login
 from django.shortcuts import render
 from django.views import generic
-from .models import Parent, Child, Inquiry
+from django.views.decorators.csrf import csrf_exempt
+from .models import Parent, Child, Inquiry, Reply
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
@@ -13,10 +15,18 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 
 
-def test(request, pk):
+def reply(request, pk):
     var = Inquiry.objects.get(pk=pk)
     context = {'inquiry': var}
-    return render_to_response("reply.html", context)
+    if request.POST:  # Is there post data in the request?
+        if request.POST['pin'] == var.child.pin:  # checks to see if pin is accurate
+            Reply.objects.create(inquiry=var,
+                                 description=request.POST['description'],
+                                 position=request.POST['position'])
+        else:
+            context['errors'] = "Invalid Pin Number"
+
+    return render_to_response("reply.html", context, context_instance=RequestContext(request))
 
 
 def home(request):
@@ -27,7 +37,7 @@ def home(request):
 class Registration(generic.FormView):
     template_name = 'registration/create_user.html'
     form_class = UserCreationForm
-    success_url = 'parent_create'
+    success_url = '/'
 
     #  auto-login
     def form_valid(self, form):
@@ -36,7 +46,8 @@ class Registration(generic.FormView):
       password = self.request.POST['password1']
       user = authenticate(username=username, password=password)
       login(self.request, user)
-      return super(Registration, self).form_valid(form)
+      Parent.objects.create(user=user)
+      return super().form_valid(form)
 
 
 class ParentCreateView(generic.CreateView):
@@ -52,7 +63,7 @@ class ParentCreateView(generic.CreateView):
 
 class ChildCreateView(generic.CreateView):
     model = Child
-    fields = ['name', 'code', 'telephone']
+    fields = ['name', 'pin', 'telephone']
     template_name = 'child_form.html'
     success_url = '/child_list'
 
@@ -73,6 +84,26 @@ class ChildListView(generic.ListView):
     def get_queryset(self):
         parent = Parent.objects.get(user=self.request.user)
         return Child.objects.filter(parent=parent)
+
+
+def child_detail(request, pk):
+    obj = Child.objects.get(pk=pk)
+    latest = Inquiry.objects.filter(child=obj).order_by('id').reverse()[0]
+    inquiries = Inquiry.objects.filter(child=obj).count()
+    replies = obj.replies()
+    #replies = Reply.objects.filter(inquiry=latest.child).count()
+    stamps = Inquiry.objects.filter(child=obj).values_list('replystamp', flat=True)
+    delta = timedelta(days=0)
+    for stamp in stamps:
+        if stamp:
+            delta += stamp
+    average = delta/len(stamps)
+    second = average.seconds % 60
+    minutes = average.seconds // 60
+    hours = minutes // 60
+    context = {'obj': obj, 'latest': latest, 'inquiries': inquiries, 'replies': replies,
+               'hours': hours, 'minutes': minutes, 'seconds': second}
+    return render_to_response("child_detail.html", context, context_instance=RequestContext(request))
 
 
 class InquiryCreateView(generic.CreateView):
@@ -99,3 +130,16 @@ class InquiryListView(generic.ListView):
 class InquiryDetailView(generic.DetailView):
     model = Inquiry
     template_name = 'inquiry_detail2.html'
+
+
+def inquiry_detail(request, pk):
+    obj = Inquiry.objects.get(pk=pk)
+    diff = obj.replystamp
+    seconds = diff.seconds % 60
+    minutes = diff.seconds // 60
+    hours = minutes // 60
+    print(diff)
+    context = {'obj': obj, 'hours': hours, 'minutes': minutes, 'seconds': seconds}
+    return render_to_response("inquiry_detail2.html", context, context_instance=RequestContext(request))
+
+
