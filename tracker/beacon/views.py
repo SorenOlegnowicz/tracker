@@ -23,21 +23,22 @@ def reply(request, pk):
             Reply.objects.create(inquiry=var,
                                  description=request.POST['description'],
                                  position=request.POST['position'])
+            return redirect('success')
         else:
             context['errors'] = "Invalid Pin Number"
 
-    return render_to_response("reply.html", context, context_instance=RequestContext(request))
+    return render_to_response("reply3.html", context, context_instance=RequestContext(request))
 
 
 def home(request):
     context = {}
-    return render_to_response("base.html", context, context_instance=RequestContext(request))
+    return render_to_response("index.html", context, context_instance=RequestContext(request))
 
 
 class Registration(generic.FormView):
     template_name = 'registration/create_user.html'
     form_class = UserCreationForm
-    success_url = '/'
+    success_url = '/profile_update'
 
     #  auto-login
     def form_valid(self, form):
@@ -48,6 +49,24 @@ class Registration(generic.FormView):
       login(self.request, user)
       Parent.objects.create(user=user)
       return super().form_valid(form)
+
+
+class ParentDetailView(generic.DetailView):
+    model = Parent
+    template_name = 'parent_detail.html'
+
+    def get_object(self):
+        return self.request.user.parent
+
+
+class ParentUpdateView(generic.UpdateView):
+    model = Parent
+    fields = ['first_name', 'last_name', 'telephone']
+    template_name = 'parent_update.html'
+    success_url = '/profile'
+
+    def get_object(self):
+        return self.request.user.parent
 
 
 class ParentCreateView(generic.CreateView):
@@ -90,8 +109,11 @@ def child_detail(request, pk):
     obj = Child.objects.get(pk=pk)
     latest = Inquiry.objects.filter(child=obj).order_by('id').reverse()[0]
     inquiries = Inquiry.objects.filter(child=obj).count()
-    replies = obj.replies()
-    #replies = Reply.objects.filter(inquiry=latest.child).count()
+    replies = len(obj.replies())
+    if replies:
+        percentage = round((inquiries / replies), 2)
+    else:
+        percentage = 0
     stamps = Inquiry.objects.filter(child=obj).values_list('replystamp', flat=True)
     delta = timedelta(days=0)
     for stamp in stamps:
@@ -101,8 +123,10 @@ def child_detail(request, pk):
     second = average.seconds % 60
     minutes = average.seconds // 60
     hours = minutes // 60
-    context = {'obj': obj, 'latest': latest, 'inquiries': inquiries, 'replies': replies,
+    context = {'obj': obj, 'latest': latest, 'inquiries': inquiries,
+               'replies': replies, 'percentage': percentage,
                'hours': hours, 'minutes': minutes, 'seconds': second}
+
     return render_to_response("child_detail.html", context, context_instance=RequestContext(request))
 
 
@@ -122,14 +146,14 @@ class InquiryCreateView(generic.CreateView):
         form.instance.parent=self.request.user.parent
         return super().form_valid(form)
 
-class InquiryListView(generic.ListView):
-    model = Inquiry
-    template_name = 'inquiry_form.html'
-
-
-class InquiryDetailView(generic.DetailView):
-    model = Inquiry
-    template_name = 'inquiry_detail2.html'
+# class InquiryListView(generic.ListView):
+#     model = Inquiry
+#     template_name = 'inquiry_form.html'
+#
+#
+# class InquiryDetailView(generic.DetailView):
+#     model = Inquiry
+#     template_name = 'inquiry_detail2.html'
 
 
 def inquiry_detail(request, pk):
@@ -140,6 +164,8 @@ def inquiry_detail(request, pk):
     hours = minutes // 60
     print(diff)
     context = {'obj': obj, 'hours': hours, 'minutes': minutes, 'seconds': seconds}
-    return render_to_response("inquiry_detail2.html", context, context_instance=RequestContext(request))
+    return render_to_response("inquiry_detailT2.html", context, context_instance=RequestContext(request))
 
-
+def success(request):
+    context = {}
+    return render_to_response("success.html", context, context_instance=RequestContext(request))

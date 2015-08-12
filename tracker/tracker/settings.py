@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     "geoposition",
     "rest_framework",
     'api',
+    'widget_tweaks',
 )
 
 MIDDLEWARE_CLASSES = (

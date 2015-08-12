@@ -26,6 +26,8 @@ urlpatterns = [
     url(r'^api/', include('api.urls')),
     url(r'^registration/$', views.Registration.as_view(), name="registration"),
     url(r'^registration/parent_create/', views.ParentCreateView.as_view(), name="parent_create"),
+    url(r'^profile/', views.ParentDetailView.as_view(), name="parent_detail"),
+    url(r'^profile_update/', views.ParentUpdateView.as_view(), name="parent_update"),
     url(r'^accounts/login/', login, name="login"),
     url(r'^logout/', logout, {'next_page': '/'}, name="logout"),
     url(r'^child_create/$', views.ChildCreateView.as_view(), name='child_create'),
@@ -33,5 +35,6 @@ urlpatterns = [
     url(r'^child/(?P<pk>\d+)/', views.child_detail, name="child_detail"),
     url(r'^inquiry/$', views.InquiryCreateView.as_view(), name='inquiry_create'),
     url(r'^inquiry/(?P<pk>\d+)/', views.inquiry_detail, name='inquiry_detail'),
-    url(r'^test/(?P<pk>\d+)/', views.reply, name='reply')
+    url(r'^test/(?P<pk>\d+)/', views.reply, name='reply'),
+    url(r'^success/', views.success, name="success")
 ]

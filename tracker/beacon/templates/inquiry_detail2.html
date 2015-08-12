@@ -62,6 +62,39 @@ function initialize() {
 google.maps.event.addDomListener(window, 'load', initialize);
 
     </script>
+     <script>
+        function initGeolocation() {
+            if (navigator && navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+                } else {
+                    console.log('Geolocation is not supported');
+                }
+        }
+
+        function errorCallback() {}
+
+        function successCallback(position) {
+            var lat = position.coords.latitude.toString();
+            var long = position.coords.longitude.toString();
+            var coordinates = lat + ',' + long;
+            console.log(coordinates);
+            var coords = document.getElementById('coordinates');
+            coords.value = coordinates;
+
+            var location = {
+                relative_position: coordinates
+            };
+
+            $(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: "/api/reply/" + {{ obj.id }},
+                    datatype: 'text',
+                });
+            })
+
+        }
+    </script>
   </body>
     {% endblock %}
 </html>

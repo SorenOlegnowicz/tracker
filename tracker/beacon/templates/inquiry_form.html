@@ -1,13 +1,74 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
+{% load widget_tweaks %}
 
 {% block body %}
-    <form action="" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Create" />
-    </form>
+{#    <form action="" method="post">#}
+{#        {% csrf_token %}#}
+{#        {{ form.as_p }}#}
+{#        <input type="submit" value="Create" />#}
+{#    </form>#}
 
-    {% for inquiry in request.user.parent.inquiry_set.all|dictsortreversed:'id'|slice:":10" %}
-        <p><a href="{% url 'inquiry_detail' pk=inquiry.id %}">{{ inquiry }}</a></p>
-    {% endfor %}
+    <link rel="stylesheet" href="{% static 'css/styles/form.css' %}">
+    <style>
+        .complete a {
+        width:100%;
+        height: 100%;
+        display:block;
+        padding-left: 400px;
+        }
+        .complete {
+            vertical-align: bottom;
+        }
+        .incomplete div {
+            padding-left: 50px
+        }
+    </style>
+     <div class="row">
+            <div class="box">
+                <div class="col-lg-12" style="text-align: center">
+                    <hr>
+                    <h2 class="intro-text text-center">Send Inquiry
+                        <strong>form</strong>
+                    </h2>
+                    <hr>
+                    <form role="form" class="form-control" action="" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-lg-4"></div>
+                            <div class="form-group col-lg-4">
+                                <label class="form-label">Child</label>
+                                {% render_field form.child class+="form-control" %}
+                                <label class="form-label">Message</label>
+                                {{ form.description|add_class:"form-control" }}
+                                <button type="submit" class="btn btn-success submit" value="create">Send</button>
+                            </div>
+                            <div class="col-lg-4"></div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    <div class="row">
+            <div class="box">
+                <div class="col-lg-12" style="text-align: center">
+                    <hr>
+                    <h2 class="intro-text text-center">Recent Inquiries</h2>
+                    <hr>
+                    <table class="table table-hover table-bordered" style="height: 50px;" align="center">
+                    {% for inquiry in request.user.parent.inquiry_set.all|dictsortreversed:'id'|slice:":10" %}
+                        <tr>
+                            {% if inquiry.reply %}
+                                <td class="complete"><a href="{% url 'inquiry_detail' pk=inquiry.id %}">{{ inquiry }}</a></td>
+                                <td class="status"><p style="color:#5cb85c; width: 38%; display: block;">Completed</p></td>
+                            {% else %}
+                                <td class="incomplete"><div style="padding-left: 400px">{{ inquiry }}</div></td>
+                                <td class="status" style="width: 50%;"><p style="color:#d9534f; width: 38%; display: block;">Incomplete</p></td>
+                            {% endif %}
+                    {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
 {% endblock %}
