@@ -2,6 +2,16 @@
 
 {% block body %}
 {#    {% for child in request.user.parent.child_set %}#}
+    <style>
+        .divver {
+          content: "\022EF";
+          display: block;
+          margin-top: 10px;
+          font-size: large;
+          color: dimgrey;
+        }
+
+    </style>
     <div class="row">
             <div class="box">
                 <div class="col-lg-12" style="text-align: center">
@@ -10,6 +20,10 @@
                     <hr>
                     {% for child in object_list %}
                         <p><a href="{% url 'child_detail' child.pk %}">{{ child }}</a></p>
+{#                        <hr style="width: 100px">#}
+                        {% if not forloop.last %}
+                        <div class="divver">&lurdshar;</div>
+                        {% endif %}
                     {% endfor%}
                 </div>
             </div>

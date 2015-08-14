@@ -32,7 +32,7 @@ def reply(request, pk):
 
 def home(request):
     context = {}
-    return render_to_response("index.html", context, context_instance=RequestContext(request))
+    return render_to_response("home_page.html", context, context_instance=RequestContext(request))
 
 
 class Registration(generic.FormView):
@@ -111,7 +111,7 @@ def child_detail(request, pk):
     inquiries = Inquiry.objects.filter(child=obj).count()
     replies = len(obj.replies())
     if replies:
-        percentage = round((inquiries / replies), 2)
+        percentage = round((100 * (replies / inquiries)), 2)
     else:
         percentage = 0
     stamps = Inquiry.objects.filter(child=obj).values_list('replystamp', flat=True)
@@ -122,9 +122,13 @@ def child_detail(request, pk):
     average = delta/len(stamps)
     second = average.seconds % 60
     minutes = average.seconds // 60
+    if minutes > 60:
+        adjusted = minutes % 60
+    else:
+        adjusted = minutes * 1
     hours = minutes // 60
     context = {'obj': obj, 'latest': latest, 'inquiries': inquiries,
-               'replies': replies, 'percentage': percentage,
+               'replies': replies, 'percentage': percentage, 'adjusted': adjusted,
                'hours': hours, 'minutes': minutes, 'seconds': second}
 
     return render_to_response("child_detail.html", context, context_instance=RequestContext(request))
@@ -161,9 +165,12 @@ def inquiry_detail(request, pk):
     diff = obj.replystamp
     seconds = diff.seconds % 60
     minutes = diff.seconds // 60
+    if minutes > 60:
+        adjusted = minutes % 60
+    else:
+        adjusted = minutes * 1
     hours = minutes // 60
-    print(diff)
-    context = {'obj': obj, 'hours': hours, 'minutes': minutes, 'seconds': seconds}
+    context = {'obj': obj, 'hours': hours, 'minutes': minutes, 'seconds': seconds, 'adjusted': adjusted}
     return render_to_response("inquiry_detailT2.html", context, context_instance=RequestContext(request))
 
 def success(request):

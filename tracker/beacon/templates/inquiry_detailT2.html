@@ -27,10 +27,10 @@
                 </div>
                 <div class="col-md-4">
                     <p>Child Name:
-                        <strong>{{ obj.child }}</strong>
+                        <strong><a href="{% url 'child_detail' pk=obj.child.id %}">{{ obj.child }}</a></strong>
                     </p>
                     <p>Time it took to reply:
-                        <strong>{{ hours }} hours, {{ minutes }} minutes, {{ seconds }} seconds</strong>
+                        <strong>{{ hours }} hours, {{ adjusted }} minutes, {{ seconds }} seconds</strong>
                     </p>
                     <p>Approximate Address:
                         <strong id="address"></strong>

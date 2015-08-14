@@ -53,18 +53,18 @@
                     <span class="icon-bar"></span>
                 </button>
                 <!-- navbar-brand is hidden on larger screens, but visible when the menu is collapsed -->
-                <a class="navbar-brand" href="index.html">TenPm</a>
+                <a class="navbar-brand" href="home_page.html">TenPm</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li><a href="/">Home</a></li>
                     {% if user.id %}
-                        <li><a href="{% url 'parent_detail' %}">Profile</a></li>
-                        <li><a href="{% url 'logout' %}">Logout</a></li>
                         <li><a href="{% url 'child_create' %}">Add Child</a></li>
                         <li><a href="{% url 'child_list' %}">Child List</a></li>
                         <li><a href="{% url 'inquiry_create' %}">Inquire</a></li>
+                        <li><a href="{% url 'parent_detail' %}">Profile</a></li>
+                        <li><a href="{% url 'logout' %}">Logout</a></li>
                     {% else %}
                     <li>
                         <a href="{% url 'login' %}">Login</a>

@@ -11,13 +11,13 @@
                     <p>Pin Number: <strong>{{ obj.pin }}</strong></p>
                     <p>Phone Number: <strong>{{ obj.telephone }}</strong></p>
                     {% if latest.reply %}
-                        <p>Most recent Inquiry: <strong style="color:#5cb85c"><a href="{% url 'inquiry_detail' latest.id %}">{{ latest }}</a></strong></p>
+                        <p>Most recent Inquiry: <strong><a style="color:#5cb85c" href="{% url 'inquiry_detail' latest.id %}">{{ latest }}</a></strong></p>
                     {% else %}
                         <p>Most recent Inquiry: <strong style="color:#d9534f">{{ latest }}</strong></p>
                     {% endif %}
                     <p>Total Replies: <strong>{{ replies }}</strong></p>
                     <p>Replies per Inquiry: <strong>{{ percentage }} %</strong></p>
-                    <p>Average time to reply: <strong>{{ hours }} hours, {{ minutes }} minutes, {{ seconds }} seconds</strong></p>
+                    <p>Average time to reply: <strong>{{ hours }} hours, {{ adjusted }} minutes, {{ seconds }} seconds</strong></p>
                 </div>
             </div>
         </div>
