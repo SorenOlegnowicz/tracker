@@ -1,5 +1,6 @@
 django
 django-widget-tweaks
 twilio
-djangorestframwork
+djangorestframework
 markdown
+django-geoposition
