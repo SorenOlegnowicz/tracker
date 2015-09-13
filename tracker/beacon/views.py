@@ -8,7 +8,7 @@ from .models import Parent, Child, Inquiry, Reply
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.views.generic import ListView, DetailView
 from django.shortcuts import render_to_response
@@ -38,7 +38,7 @@ def home(request):
 class Registration(generic.FormView):
     template_name = 'registration/create_user.html'
     form_class = UserCreationForm
-    success_url = '/profile_update'
+    success_url = '/'
 
     #  auto-login
     def form_valid(self, form):
@@ -107,7 +107,10 @@ class ChildListView(generic.ListView):
 
 def child_detail(request, pk):
     obj = Child.objects.get(pk=pk)
-    latest = Inquiry.objects.filter(child=obj).order_by('id').reverse()[0]
+    try:
+        latest = Inquiry.objects.filter(child=obj).order_by('id').reverse()[0]
+    except:
+        latest = 'NA'
     inquiries = Inquiry.objects.filter(child=obj).count()
     replies = len(obj.replies())
     if replies:
@@ -119,19 +122,40 @@ def child_detail(request, pk):
     for stamp in stamps:
         if stamp:
             delta += stamp
-    average = delta/len(stamps)
-    second = average.seconds % 60
-    minutes = average.seconds // 60
-    if minutes > 60:
-        adjusted = minutes % 60
-    else:
-        adjusted = minutes * 1
-    hours = minutes // 60
+    try:
+        average = delta/len(stamps)
+        second = average.seconds % 60
+        minutes = average.seconds // 60
+        if minutes > 60:
+            adjusted = minutes % 60
+        else:
+            adjusted = minutes * 1
+        hours = minutes // 60
+    except:
+        average = 'NA'
+        second = 'NA'
+        minutes = 'NA'
+        hours = 'NA'
+        adjusted = 'NA'
     context = {'obj': obj, 'latest': latest, 'inquiries': inquiries,
                'replies': replies, 'percentage': percentage, 'adjusted': adjusted,
                'hours': hours, 'minutes': minutes, 'seconds': second}
+    # except:
+    #     return redirect('bad_child')
 
     return render_to_response("child_detail.html", context, context_instance=RequestContext(request))
+
+
+class ChildUpdateView(generic.UpdateView):
+    model = Child
+    fields = ['name', 'pin', 'telephone']
+    template_name = 'child_update.html'
+    success_url = '/'
+
+
+class ChildDeleteView(generic.DeleteView):
+    model = Child
+    success_url = '/child_list'
 
 
 class InquiryCreateView(generic.CreateView):
@@ -176,3 +200,7 @@ def inquiry_detail(request, pk):
 def success(request):
     context = {}
     return render_to_response("success.html", context, context_instance=RequestContext(request))
+
+def bad_child(request):
+    context = {}
+    return render_to_response("bad_child.html", context, context_instance=RequestContext(request))

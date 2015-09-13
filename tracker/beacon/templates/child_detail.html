@@ -17,7 +17,19 @@
                     {% endif %}
                     <p>Total Replies: <strong>{{ replies }}</strong></p>
                     <p>Replies per Inquiry: <strong>{{ percentage }} %</strong></p>
-                    <p>Average time to reply: <strong>{{ hours }} hours, {{ adjusted }} minutes, {{ seconds }} seconds</strong></p>
+                    {% if hours != 'NA' %}
+                        <p>Average time to reply: <strong>{{ hours }} hours, {{ adjusted }} minutes, {{ seconds }} seconds</strong></p>
+                    {% else %}
+                        <p>Average time to reply: NA</p>
+                    {% endif %}
+                    <form method="GET" action="{% url 'child_update' obj.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success">Update</button>
+                    </form>
+                    <form method="POST" action="{% url 'child_delete' obj.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
                 </div>
             </div>
         </div>
