@@ -69,7 +69,7 @@ def create_sms(sender, instance, created=False, **kwargs):
         print(instance.child.telephone)
         client.messages.create(to='+1' + instance.child.telephone,
                                from_="+12513331231",
-                               body=instance.description + ' 10.0.10.67:8000/test/' + str(instance.id))
+                               body=instance.description + ' http://ec2-54-210-19-242.compute-1.amazonaws.com/test/' + str(instance.id))
 
 @receiver(post_save, sender=Reply)
 def create_replystamp(sender, instance, created=False, **kwargs):
