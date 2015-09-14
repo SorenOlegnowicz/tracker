@@ -21,7 +21,7 @@
                     {% if hours != 'NA' %}
                         <p>Average time to reply: <strong>{{ hours }} hours, {{ adjusted }} minutes, {{ seconds }} seconds</strong></p>
                     {% else %}
-                        <p>Average time to reply: NA</p>
+                        <p>Average time to reply: <strong>NA</strong></p>
                     {% endif %}
                 <div>
                     <form style="padding: 20px;" method="GET" action="{% url 'child_update' obj.pk %}">

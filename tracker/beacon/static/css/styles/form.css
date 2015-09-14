@@ -1,3 +1,27 @@
+td p {
+    color:#5cb85c;
+    width: 38%;
+    display: block;
+}
+    #other {
+        color:#d9534f;
+    }
+
+.complete div {
+    width: 100%;
+    height: 100%;
+    display:block;
+    margin-left: 100px;
+    text-indent: 200px;
+    }
+
+.complete {
+    vertical-align: bottom;
+}
+.incomplete div {
+    padding-left: 50px
+}
+
 .form-control {
     border-radius: 5px;
     display: inline;
@@ -17,13 +41,6 @@
 
 }
 
-/*.tabler {*/
-    /*width: 300px;*/
-    /*height: 100px;*/
-/*}*/
-
-/*.tabler a {*/
-     /*width: 100%;*/
-    /*height: 100%;*/
-    /*display: block;*/
-/*}*/
+[data-link] {
+    cursor: pointer;
+}
