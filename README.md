@@ -11,7 +11,7 @@ Once you have made your account, simply create a child to begin sending messages
 
 (note: this application has only been tested on Android devices)
 
-## TIY Final Project
+## About
 
 This web application was my final project for The Iron Yard's Python Engineering program. Being able to handle the front-end, back-end, and operations sides of a web application was pretty eye opening for me. I know that I have a lot more to learn, but just the knowledge of what is within my power is enough to bode of an auspicious future.
 
