@@ -22,6 +22,10 @@ td p {
     padding-left: 50px
 }
 
+.errors {
+    color:#d9534f;
+}
+
 .form-control {
     border-radius: 5px;
     display: inline;
@@ -44,3 +48,4 @@ td p {
 [data-link] {
     cursor: pointer;
 }
+

@@ -4,7 +4,7 @@ from django.contrib.auth import login
 from django.shortcuts import render
 from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
-from .models import Parent, Child, Inquiry, Reply
+from .models import Parent, Child, Inquiry, Reply, User
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
@@ -40,7 +40,29 @@ class Registration(generic.FormView):
     form_class = UserCreationForm
     success_url = '/'
 
-    #  auto-login
+    # an error message
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        try:
+            if User.objects.get(username=self.request.POST['username']):
+                context['error_error'] = "Username already taken"
+                print("Username already taken")
+        except:
+            return context
+        return context
+
+
+    def post(self, request, **kwargs):
+        request.POST = request.POST.copy()
+        try:
+            #print(User.objects.get(username=request.POST['username']).parent.first_name)
+            if User.objects.get(username=request.POST['username']) == request.POST['username']:
+                request.POST['error_error'] = "Username already taken"
+        except:
+            return super().post(request, **kwargs)
+        return super().post(request, **kwargs)
+
+    # auto-login
     def form_valid(self, form):
       form.save()
       username = self.request.POST['username']
@@ -140,8 +162,6 @@ def child_detail(request, pk):
     context = {'obj': obj, 'latest': latest, 'inquiries': inquiries,
                'replies': replies, 'percentage': percentage, 'adjusted': adjusted,
                'hours': hours, 'minutes': minutes, 'seconds': second}
-    # except:
-    #     return redirect('bad_child')
 
     return render_to_response("child_detail.html", context, context_instance=RequestContext(request))
 
@@ -173,15 +193,6 @@ class InquiryCreateView(generic.CreateView):
     def form_valid(self, form):
         form.instance.parent=self.request.user.parent
         return super().form_valid(form)
-
-# class InquiryListView(generic.ListView):
-#     model = Inquiry
-#     template_name = 'inquiry_form.html'
-#
-#
-# class InquiryDetailView(generic.DetailView):
-#     model = Inquiry
-#     template_name = 'inquiry_detail2.html'
 
 
 def inquiry_detail(request, pk):

@@ -24,7 +24,7 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.home, name='home'),
     url(r'^api/', include('api.urls')),
-    url(r'^registration/$', views.Registration.as_view(), name="registration"),
+        url(r'^registration/$', views.Registration.as_view(), name="registration"),
     url(r'^registration/parent_create/', views.ParentCreateView.as_view(), name="parent_create"),
     url(r'^profile/', views.ParentDetailView.as_view(), name="parent_detail"),
     url(r'^profile_update/', views.ParentUpdateView.as_view(), name="parent_update"),
