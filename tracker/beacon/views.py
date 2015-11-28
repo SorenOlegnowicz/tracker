@@ -27,7 +27,7 @@ def reply(request, pk):
         else:
             context['errors'] = "Invalid Pin Number"
 
-    return render_to_response("reply3.html", context, context_instance=RequestContext(request))
+    return render_to_response("reply.html", context, context_instance=RequestContext(request))
 
 
 def home(request):
@@ -110,6 +110,7 @@ class ChildCreateView(generic.CreateView):
 
     def form_valid(self, form):
         form.instance.parent=self.request.user.parent
+        print(self.fields[0:])
         return super().form_valid(form)
 
 
@@ -206,12 +207,8 @@ def inquiry_detail(request, pk):
         adjusted = minutes * 1
     hours = minutes // 60
     context = {'obj': obj, 'hours': hours, 'minutes': minutes, 'seconds': seconds, 'adjusted': adjusted}
-    return render_to_response("inquiry_detailT2.html", context, context_instance=RequestContext(request))
+    return render_to_response("inquiry_detail.html", context, context_instance=RequestContext(request))
 
 def success(request):
     context = {}
     return render_to_response("success.html", context, context_instance=RequestContext(request))
-
-def bad_child(request):
-    context = {}
-    return render_to_response("bad_child.html", context, context_instance=RequestContext(request))

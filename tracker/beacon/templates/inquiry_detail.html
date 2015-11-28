@@ -1,11 +1,170 @@
 {% extends 'base.html' %}
 
-{% block body %}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-    <form method="POST" action="">
-        {% csrf_token %}
-        {{ form.media }}
-        {{ form.as_p }}
-    </form>
-    <p>Hello!</p>
+{% load staticfiles %}
+
+    {% block body %}
+
+        <link rel="stylesheet" href="{% static 'css/styles/maps.css' %}">
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&sensor=true&libraries=geometry"></script>
+
+    <body onload="javascript:initGeolocation()">
+
+    <div class="container">
+        <div class="box">
+        <div class="row">
+                <div class="col-lg-12">
+                    <hr>
+                    <h2 class="intro-text text-center">Inquiry Details
+                    </h2>
+                    <hr>
+                </div>
+        </div>
+        <div class="row">
+                <div class="col-md-8">
+                    <!-- Embedded Google Map using an iframe - to select your location find it on Google maps and paste the link as the iframe src. If you want to use the Google Maps API instead then have at it! -->
+{#                    <iframe width="100%" height="400" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;ll=37.0625,-95.677068&amp;spn=56.506174,79.013672&amp;t=m&amp;z=4&amp;output=embed"></iframe>#}
+                    <div id="map-canvas"></div>
+                </div>
+                <div class="col-md-4">
+                    <p>Child Name:
+                        <strong><a href="{% url 'child_detail' pk=obj.child.id %}">{{ obj.child }}</a></strong>
+                    </p>
+                    <p>Time it took to reply:
+                        <strong>{{ hours }} hours, {{ adjusted }} minutes, {{ seconds }} seconds</strong>
+                    </p>
+                    <p>Approximate Address:
+                        <strong id="address"></strong>
+                    </p>
+                    <p>As the Crow flies:
+                        <strong id="distance"></strong> Miles
+                    </p>
+                    <p>Message: <b>{{ obj.reply.description }}</b></p>
+                </div>
+                <div class="clearfix"></div>
+
+        </div>
+        </div>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <p>Copyright &copy; Your Website 2014</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="{% static 'js/jquery.js' %}"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+</body>
+
+    <script type="application/javascript">
+
+
+
+// In this example, we center the map, and add a marker, using a LatLng object
+// literal instead of a google.maps.LatLng object. LatLng object literals are
+// a convenient way to add a LatLng coordinate and, in most cases, can be used
+// in place of a google.maps.LatLng object.
+
+
+var map;
+function initialize() {
+{#    console.log("working")#}
+  var mapOptions = {
+    zoom: 13,
+    center: {lat:{{ obj.reply.position.latitude }}, lng: {{obj.reply.position.longitude}}}
+  };
+  map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+    console.log(map)
+  var marker = new google.maps.Marker({
+    // The below line is equivalent to writing:
+    // position: new google.maps.LatLng(-34.397, 150.644)
+    position: {lat: {{ obj.reply.position.latitude }}, lng: {{obj.reply.position.longitude}}},
+    map: map
+  });
+
+   // You can use a LatLng literal in place of a google.maps.LatLng object when
+  // creating the Marker object. Once the Marker object is instantiated, its
+  // position will be available as a google.maps.LatLng object. In this case,
+  // we retrieve the marker's position using the
+  // google.maps.LatLng.getPosition() method.
+  var infowindow = new google.maps.InfoWindow({
+    content: '<p>Marker Location:' + marker.getPosition() + '</p>'
+  });
+
+  google.maps.event.addListener(marker, 'click', function() {
+    infowindow.open(map, marker);
+  });
+}
+//var mapper =  http://maps.googleapis.com/maps/api/geocode/jsonlatlng={{ obj.reply.position.latitude }},{{ obj.reply.position.longitude }}&sensor=true/false;
+
+    var diff2 = 2;
+{#    console.log(diff2)#}
+{#            document.getElementById('di').innerHTML = diff2;#}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+           <script>
+        function initGeolocation() {
+            if (navigator && navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+                } else {
+                    console.log('Geolocation is not supported');
+                }
+        }
+
+        function errorCallback() {}
+
+        function successCallback(position) {
+            var lat = position.coords.latitude;
+            var long = position.coords.longitude;
+            var parent = new google.maps.LatLng(lat, long);
+            var child = new google.maps.LatLng({{ obj.reply.position.latitude }}, {{ obj.reply.position.longitude }});
+            console.log('child',child);
+            console.log('parent',parent);
+            console.log(lat, long);
+{#            var coordinates = lat + ',' + long;#}
+{#            console.log(coordinates);#}
+{#            var coords = document.getElementById('coordinates');#}
+{#            coords.value = coordinates;#}
+            var meters = google.maps.geometry.spherical.computeDistanceBetween(parent, child);
+            var miles = meters * 0.000621371192;
+            console.log(miles);
+            document.getElementById('distance').innerHTML = miles.toFixed(3);
+            var geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ 'latLng': child }, function (results, status) {
+                console.log(results);
+                if (status == google.maps.GeocoderStatus.OK) {
+                    if (results[0]) {
+                        document.getElementById('address').innerHTML = results[0].formatted_address;
+                    }
+                }
+            });
+        }
+
+
+           </script>
+
+        <script type="application/javascript">
+        function GetAddress() {
+            var latlong = new google.maps.LatLng({{ obj.reply.position.latitude }}, {{ obj.reply.position.longitude }});
+            console.log('latlng', latlong);
+            var geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ 'latLong': latlong }, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    if (results[1]) {
+                        console.log("Location: " + results[1].formatted_address);
+                    }
+                }
+            });
+        }
+        </script>
 {% endblock %}

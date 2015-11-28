@@ -39,5 +39,4 @@ urlpatterns = [
     url(r'^inquiry/(?P<pk>\d+)/', views.inquiry_detail, name='inquiry_detail'),
     url(r'^test/(?P<pk>\d+)/', views.reply, name='reply'),
     url(r'^success/', views.success, name="success"),
-    url(r'bad_child', views.bad_child, name="bad_child"),
 ]
